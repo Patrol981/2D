@@ -14,25 +14,15 @@ namespace _2D {
 			window.Close();
 		}
     static void Main(string[] args) {
-      RenderWindow app = new RenderWindow(new VideoMode(800,600), "SFML TEST");
+			VideoMode desktopResolution = VideoMode.DesktopMode;
+      RenderWindow app = new RenderWindow(desktopResolution, "2D Game");
 			app.Closed += new EventHandler(OnClose);
-			
-			Color windowColor = new Color(10,10,10);
 
-			Texture texture = new Texture("./resources/adlero.JPG");
-			texture.Smooth = false;
-			texture.Repeated = false;
-			
-			Sprite sprite = new Sprite(texture);
-
-			sprite.Position = new Vector2f(400f,200f);
+			Renderer renderer = new Renderer(app);
 
 			while(app.IsOpen) {
 				app.DispatchEvents();
-				app.Clear(windowColor);
-				texture.Update(app);
-				app.Draw(sprite);
-				sprite.Rotation += .03f;
+				renderer.Update();
 				app.Display();
 			}
     }
