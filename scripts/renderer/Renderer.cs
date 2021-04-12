@@ -20,19 +20,26 @@ namespace _2D {
 
     #endregion
 
+    #region Diagnostics
+
+    Framerate framerate;
+
+    #endregion
+
     public Renderer(RenderWindow _app) {
       this._app = _app;
 
-      windowColor = new Color(10,10,10);
+      windowColor = new Color(135,206,235);
+
+      framerate = new Framerate(_app);
 
       player = new Player(_app, 700f, 400f, "./resources/adlero.JPG", 180f);
     }
 
     public void Update() {
       _app.Clear(windowColor);
-			// playerTexture.Update(_app);
-			// _app.Draw(playerSprite);
-			// sprite.Rotation += .03f;
+      
+      framerate.Display();
       player.UpdateLogic();
     }
   }

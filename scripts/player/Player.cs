@@ -4,43 +4,28 @@ using SFML.System;
 using SFML.Window;
 
 namespace _2D {
-  public class Player {
-    public RenderWindow _app;
-
-    public float x;
-    public float y;
-    public Texture texture;
-    public Sprite sprite;
+  public class Player: Entity {
+    
     public float speed;
-    public float rotation;
-    public Player(RenderWindow _app, float x, float y, string spritePath, float rotation) {
-      this._app = _app;
-
-      this.x = x;
-      this.y = y;
-      this.texture = new Texture(spritePath);
-      this.texture.Smooth = false;
-      this.texture.Repeated = false;
-      this.sprite = new Sprite(this.texture);
+    public Player(RenderWindow _app, float x, float y, string spritePath, float rotation): base(_app, x, y, spritePath, rotation) {
       speed = .1f;
-      this.rotation = rotation;
-      this.sprite.Position = new Vector2f(this.x, this.y);
-      this.sprite.Rotation = this.rotation;
     }
     public void Move() {
       if(Keyboard.IsKeyPressed(Keyboard.Key.D)) {
         this.x += this.speed;
+        this.FlipSprite(new Vector2f(1f,1f));
       }
       
       if(Keyboard.IsKeyPressed(Keyboard.Key.A)) {
         this.x -= this.speed;
+        this.FlipSprite(new Vector2f(-1f,1f));
       }
-      this.sprite.Position = new Vector2f(this.x, this.y);
-    }
 
-    public void UpdateGraphics() {
-      this.texture.Update(_app);
-      _app.Draw(this.sprite);
+      if(Keyboard.IsKeyPressed(Keyboard.Key.Space) && this.force <= 0) {
+        SetForce(3);
+      }
+
+      this.sprite.Position = new Vector2f(this.x, this.y);
     }
     public void UpdateLogic() {
       Move();
