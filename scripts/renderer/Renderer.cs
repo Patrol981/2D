@@ -14,6 +14,9 @@ namespace _2D {
 
     Color windowColor;
 
+    public uint newHeight;
+    public int displace;
+
 
     #region  Player
     Player player;
@@ -33,7 +36,7 @@ namespace _2D {
 
       framerate = new Framerate(_app);
 
-      player = new Player(_app, 700f, 400f, "./resources/adlero.JPG", 180f);
+      player = new Player(_app, 700f, 400f, "./resources/hero.png", 180f);
     }
 
     public void Update() {

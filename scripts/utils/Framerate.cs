@@ -26,6 +26,7 @@ namespace _2D {
       fpsRate.Font = font;
       fpsRate.DisplayedString = "FPS:";
       fpsRate.CharacterSize = 24;
+      fpsRate.Position = new Vector2f(10,10);
       fpsRate.FillColor = Color.White;
       fpsRate.Style = Text.Styles.Regular;
       this._app = _app;

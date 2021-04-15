@@ -15,7 +15,7 @@ namespace _2D {
 		}
     static void Main(string[] args) {
 			VideoMode desktopResolution = VideoMode.DesktopMode;
-      RenderWindow app = new RenderWindow(desktopResolution, "2D Game");
+      RenderWindow app = new RenderWindow(desktopResolution, "2D Game", Styles.Fullscreen);
 			app.Closed += new EventHandler(OnClose);
 
 			Renderer renderer = new Renderer(app);
