@@ -8,6 +8,7 @@ using System.Collections.Generic;
 namespace _2D {
   public class Framerate {
     Clock clock;
+    Clock textClockController;
     float fps;
     Font font;
     Time prevTime;
@@ -19,6 +20,7 @@ namespace _2D {
 
     public Framerate(RenderWindow _app) {
       clock = new Clock();
+      textClockController = new Clock();
       prevTime = clock.ElapsedTime;
       fps = 0;
       font = new Font("./resources/fonts/PressStart2P-Regular.ttf");
@@ -35,7 +37,10 @@ namespace _2D {
     public void Tick() {
       currentTime = clock.ElapsedTime;
       fps = 1.0f / (currentTime.AsSeconds() - prevTime.AsSeconds());
-      this.fpsRate.DisplayedString = $"FPS:{Math.Round(fps)}";
+      if(textClockController.ElapsedTime > Time.FromSeconds(1f)) {
+        textClockController.Restart();
+        this.fpsRate.DisplayedString = $"FPS:{Math.Round(fps)}";
+      }
       prevTime = currentTime;
     }
 

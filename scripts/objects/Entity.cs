@@ -16,7 +16,8 @@ namespace _2D {
     public float force;
 
     bool firstStepIdle = true;
-    bool waitingForAnimationFrame = false;
+    public bool waitingForAnimationFrame = false;
+    public bool state = true;
 
     Clock clock;
 
@@ -51,6 +52,14 @@ namespace _2D {
       this.idle = 0;
     }
     // if ( sprite.getPosition().y + sprite.getLocalBounds().height >= window.getSize().y ) { }
+    public virtual void UpdateLogic() {
+      Move();
+      UpdateGraphics();
+    }
+
+    public virtual void Move() {
+      this.sprite.Position = new Vector2f(this.x, this.y);
+    }
     public void UpdatePhysics() {
       if(this.sprite.Position.Y + sprite.GetLocalBounds().Height <= _app.Size.Y  && this.force == 0) {
         this.y += 0.25f;
@@ -66,13 +75,14 @@ namespace _2D {
         if(this.firstStepIdle) {
           this.firstStepIdle = false;
           this.idle = Convert.ToInt32(Animations.Idle1);
+
           //this.sprite.TextureRect = SpriteLoader.SetRect(this.turn,Convert.ToInt32(Animations.Idle1),32,32);
         } else {
           this.firstStepIdle = true;
           this.idle = Convert.ToInt32(Animations.Idle2);
           //this.sprite.TextureRect = SpriteLoader.SetRect(this.turn,Convert.ToInt32(Animations.Idle2),32,32);
         }
-      } else if(waitingForAnimationFrame) {
+      } else if(waitingForAnimationFrame && clock.ElapsedTime > Time.FromSeconds(.15f)) {
         waitingForAnimationFrame = false;
         this.idle = Convert.ToInt32(Animations.SpecialAnimation2);
         clock.Restart();

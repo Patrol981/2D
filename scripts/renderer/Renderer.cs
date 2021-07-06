@@ -23,6 +23,14 @@ namespace _2D {
 
     #endregion
 
+    #region NPC
+    List<Entity> npcs = new List<Entity>();
+    #endregion
+
+    #region Terrain
+    public Terrain terrain;
+    #endregion
+
     #region Diagnostics
 
     Framerate framerate;
@@ -36,14 +44,22 @@ namespace _2D {
 
       framerate = new Framerate(_app);
 
+      terrain = new Terrain(_app.Size);
+
       player = new Player(_app, 700f, 400f, "./resources/hero.png", 180f);
+
+      npcs.Add(new Entity(_app, 800f, 400f, "./resources/hero.png", 180f));
+
     }
 
     public void Update() {
       _app.Clear(windowColor);
-      
       framerate.Display();
       player.UpdateLogic();
+      for(int i=0; i<npcs.Count; i++) {
+        npcs[i].UpdateLogic();
+      }
+      _app.Draw(terrain.convexShape);
     }
   }
 }
