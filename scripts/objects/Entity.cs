@@ -3,12 +3,28 @@ using SFML;
 using SFML.System;
 using SFML.Window;
 using System;
+using System.IO;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Runtime.InteropServices;
 
 namespace _2D {
+  public struct EntityData {
+    public RenderWindow _app;
+    public Renderer renderer;
+    public float x;
+    public float y;
+    public string spritePath;
+    public float rotation;
+    public string nickname;
+    public NetworkClient.NetworkData networkData;
+  }
   public class Entity {
     public RenderWindow _app;
     public float x;
     public float y;
+    public string nickname;
     public Texture texture;
     public Sprite sprite;
     public float rotation;
@@ -30,26 +46,40 @@ namespace _2D {
       SpecialAnimation2 = 0,
     }
 
-    public Entity(RenderWindow _app, float x, float y, string spritePath, float rotation) {
-      this._app = _app;
+    // Terrain ref
+    private Terrain myTerrain;
+    private Renderer rendererRef;
 
-      this.x = x;
-      this.y = y;
+    // Networking
+    protected NetworkClient.NetworkData networkData;
 
-      this.texture = new Texture(spritePath);
+    public Entity(EntityData entityData) {
+      this._app = entityData._app;
+
+      this.x = entityData.x;
+      this.y = entityData.y;
+
+      this.nickname = entityData.nickname;
+
+      this.texture = new Texture(entityData.spritePath);
       this.texture.Smooth = false;
       this.texture.Repeated = false;
       this.sprite = new Sprite(this.texture);
       this.sprite.TextureRect = SpriteLoader.SetRect(0,32,32,32);
 
-      this.rotation = rotation;
+      this.rotation = entityData.rotation;
       this.sprite.Position = new Vector2f(this.x, this.y);
       this.sprite.Rotation = this.rotation;
+
+      this.networkData = entityData.networkData;
 
       clock = new Clock();
 
       this.turn = 0;
       this.idle = 0;
+
+      // this.myTerrain = myTerrain;
+      rendererRef = entityData.renderer;
     }
     // if ( sprite.getPosition().y + sprite.getLocalBounds().height >= window.getSize().y ) { }
     public virtual void UpdateLogic() {
@@ -61,6 +91,9 @@ namespace _2D {
       this.sprite.Position = new Vector2f(this.x, this.y);
     }
     public void UpdatePhysics() {
+      //float closestX = rendererRef.terrain.positions.OrderBy(myX => Math.Abs(sprite.Position.X - myX)).First();
+      //float closestY;
+      //if(this.sprite.Position.Y + sprite.GetGlobalBounds().Height <= rendererRef.terrain.positions)
       if(this.sprite.Position.Y + sprite.GetLocalBounds().Height <= _app.Size.Y  && this.force == 0) {
         this.y += 0.25f;
       } else if(force != 0) {

@@ -18,6 +18,7 @@ namespace _2D {
       this.positions = new List<VertexPosition>();
 
       convexShape.SetPointCount(10);
+      // convexShape.SetPointCount(size.X);
 
       VertexPosition vertexPosition;
 
@@ -36,6 +37,9 @@ namespace _2D {
         vertexPosition.x = convexShape.GetPoint(pointStart).X;
         vertexPosition.y = convexShape.GetPoint(pointStart).Y;
         positions.Add(vertexPosition);
+
+       //float noise = Noise2D(255,255);
+       //Console.WriteLine(noise);
 
         pointStart++;
       }
@@ -57,6 +61,47 @@ namespace _2D {
         Console.WriteLine($"{positions[i].x} {positions[i].y}");
       }
     }
+
+    float Noise2D(float x, float y) {
+      int x0 = (int)x;
+      int x1 = x0 + 1;
+      int y0 = (int)y;
+      int y1 = y0 + 1;
+
+      float sX = x - (float)x0;
+      float sY = y - (float)y0;
+
+      float n0, n1, ix0, ix1, value;
+      n0 = DotGridGradient(x0, y0, x, y);
+      n1 = DotGridGradient(x1, y0, x, y);
+      ix0 = Interpolate(n0, n1, sX);
+
+      n0 = DotGridGradient(x0, y1, x, y);
+      n1 = DotGridGradient(x1, y1, x, y);
+      ix1 = Interpolate(n0, n1, sY);
+
+      value = Interpolate(ix0, ix1, sY);
+      return value;
+    }
+
+    float DotGridGradient(int ix, int iy, float x, float y) {
+      Vector2f gradient = RandomGradient(ix, iy);
+
+      float dx = x - (float)ix;
+      float dy = y - (float)iy;
+
+      return (dx*gradient.X + dy * gradient.Y);
+    }
+
+    Vector2f RandomGradient(int ix, int iy) {
+      float random = 2920f * MathF.Sin(ix * 21942f + iy * 171324f + 8912f) * MathF.Cos(ix * 23157f * iy * 217832f + 9758f);
+      return new Vector2f(MathF.Cos(random), MathF.Sin(random));
+    }
+
+    float Interpolate(float a0, float a1, float w) {
+      return (a1 - a0) * w + a0;
+    }
+
   }
 
   internal abstract class Randomizer {

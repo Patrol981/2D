@@ -3,6 +3,7 @@ using SFML;
 using SFML.System;
 using SFML.Window;
 using System;
+using System.Threading;
 
 namespace _2D {
   public class Player: Entity {
@@ -10,7 +11,7 @@ namespace _2D {
     public bool canAttack = true;
 
     Clock clock;
-    public Player(RenderWindow _app, float x, float y, string spritePath, float rotation): base(_app, x, y, spritePath, rotation) {
+    public Player(EntityData entityData): base(entityData) {
       speed = .2f;
       _app.KeyReleased += OnKeyReleased;
       this.SetScale(new Vector2f(4f,4f));
@@ -49,6 +50,37 @@ namespace _2D {
       }
       Move();
       UpdateGraphics();
+      // UpdateNetwork();
+    }
+
+    public async void UpdateNetwork() {
+      // Thread.Sleep(25);
+
+      /*
+      NetworkClient.SecondPlayer secondPlayerData;
+			secondPlayerData.x = this.sprite.Position.X;
+			secondPlayerData.y = this.sprite.Position.Y;
+      */
+
+      NetworkClient.PositionData positionData;
+      positionData.msg = this.nickname;
+      positionData.x = this.sprite.Position.X;
+      positionData.y = this.sprite.Position.Y;
+
+      // Console.WriteLine(this.networkData.udpClient.Client.Connected);
+
+      Console.WriteLine(this.x);
+
+      Byte[] sendDatagram = NetworkClient.GetBytes(positionData);
+      await this.networkData.udpClient.SendAsync(sendDatagram, sendDatagram.Length);
+
+      Byte[] recieve = this.networkData.udpClient.Receive(ref this.networkData.IP);
+      //NetworkClient.PositionData secondPlayer = NetworkClient.FromBytes(recieve);
+      NetworkClient.SecondPlayer secondPlayer = NetworkClient.FromBytesToSecondPlayer(recieve);
+      // NetworkClient.PositionData recieveData = NetworkClient.FromBytes(recieve);
+      // Console.WriteLine(secondPlayer.nickname);
+      // Console.WriteLine(secondPlayer.x);
+      // Console.WriteLine(secondPlayer.y);
     }
   }
 }
