@@ -21,6 +21,9 @@ namespace _2D {
 			Console.Write("Wpisz nick: ");
 			String nickname = Console.ReadLine();
 
+			Console.Write("Podaj adres IP: ");
+			String IPAddr = Console.ReadLine();
+
 			/*
 			UdpClient udpClient = new UdpClient();
 			IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse("192.168.1.5"), 4342);
@@ -60,7 +63,7 @@ namespace _2D {
 			app.Closed += new EventHandler(OnClose);
 
 			UdpClient udpClient = new UdpClient();
-			IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse("192.168.1.5"), 4342);
+			IPEndPoint ipEndPoint = new IPEndPoint(IPAddress.Parse(IPAddr), 4342);
 			udpClient.Connect(ipEndPoint.Address, ipEndPoint.Port);
 			NetworkClient.NetworkData networkData;
 			networkData.IP = ipEndPoint;

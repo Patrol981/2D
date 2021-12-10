@@ -9,6 +9,7 @@ using SFML.Window;
 using SFML.System;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 
 namespace _2D {
   public class Renderer {
@@ -43,6 +44,11 @@ namespace _2D {
     #region Networking
     private UdpClient udpClient;
     private IPEndPoint IP;
+    int delayer = 0;
+    Time prevTime;
+    Time currentTime;
+    Clock networkClock = new();
+    Clock networkClockController = new();
     #endregion
 
     public Renderer(RenderWindow _app, NetworkClient.NetworkData networkData, string nickname) {
@@ -88,21 +94,26 @@ namespace _2D {
     }
 
     public async void UpdateEntitiesNetwork() {
-      NetworkClient.PositionData positionData;
-      positionData.msg = player.nickname;
-      positionData.x = player.sprite.Position.X;
-      positionData.y = player.sprite.Position.Y;
+      currentTime = networkClock.ElapsedTime;
+      if(networkClockController.ElapsedTime > Time.FromSeconds(0.1f)) {
+        networkClockController.Restart();
+        NetworkClient.PositionData positionData;
+        positionData.msg = player.nickname;
+        positionData.x = player.sprite.Position.X;
+        positionData.y = player.sprite.Position.Y;
 
-      Byte[] sendDatagram = NetworkClient.GetBytes(positionData);
-      await this.udpClient.SendAsync(sendDatagram, sendDatagram.Length);
+        Byte[] sendDatagram = NetworkClient.GetBytes(positionData);
+        await this.udpClient.SendAsync(sendDatagram, sendDatagram.Length);
 
-      Byte[] recieve = this.udpClient.Receive(ref this.IP);
-      NetworkClient.SecondPlayer secondPlayer = NetworkClient.FromBytesToSecondPlayer(recieve);
+        Byte[] recieve = this.udpClient.Receive(ref this.IP);
+        NetworkClient.SecondPlayer secondPlayer = NetworkClient.FromBytesToSecondPlayer(recieve);
 
-      Console.WriteLine($"{secondPlayer.nickname} {secondPlayer.x} {secondPlayer.y}");
+        Console.WriteLine($"{secondPlayer.nickname} {secondPlayer.x} {secondPlayer.y}");
 
-      this.secondPlayer.x = secondPlayer.x;
-      this.secondPlayer.y = secondPlayer.y;
+        this.secondPlayer.x = secondPlayer.x;
+        this.secondPlayer.y = secondPlayer.y;
+      }
+      prevTime = currentTime;
       this.secondPlayer.UpdateLogic();
     }
 
